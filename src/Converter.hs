@@ -16,13 +16,15 @@ get64bitHash :: ByteString -> ByteString
 get64bitHash str = BS.take 8 $ fromChunks [h]
   where h = digestToByteString $ md5 str
 
-get64bitId :: String -> Word64
-get64bitId = bs2Int . get64bitHash . BSC.pack
+get64bitId :: ByteString -> Word64
+get64bitId = bs2Int . get64bitHash
 
-processLines :: [String] -> [(Word64, String)]
+processLines :: [ByteString] -> [(Word64, ByteString)]
 processLines = Prelude.map (\str -> (get64bitId str, str))
 
-pairToStr :: (Word64, String) -> String
-pairToStr (num, str) = (show num) ++ ' ' : str
+pairToStr :: (Word64, ByteString) -> ByteString
+pairToStr (num, str) = numStr `BSC.append` sp `BSC.append` str
+    where sp = BSC.singleton ' '
+          numStr = BSC.pack . show $ num
 
 
