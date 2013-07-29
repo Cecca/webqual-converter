@@ -19,6 +19,8 @@ get64bitHash str = BS.take 8 $ fromChunks [h]
 get64bitId :: ByteString -> Word64
 get64bitId = bs2Int . get64bitHash
 
+-- # Urls file processing #
+
 processLines :: [ByteString] -> [(Word64, ByteString)]
 processLines = Prelude.map (\str -> (get64bitId str, str))
 
@@ -27,4 +29,13 @@ pairToStr (num, str) = numStr `BSC.append` sp `BSC.append` str
     where sp = BSC.singleton ' '
           numStr = BSC.pack . show $ num
 
+-- # Links file processing #
+
+groupHashes :: ByteString -> [ByteString]
+groupHashes bs
+    | BS.null bs = []
+    | otherwise = BS.take 16 bs : groupHashes (BS.drop 16 bs)
+
+unGroupHashes :: [ByteString] -> ByteString
+unGroupHashes = Prelude.foldr BS.append BS.empty
 

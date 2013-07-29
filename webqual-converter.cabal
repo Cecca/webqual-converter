@@ -11,6 +11,6 @@ executable webqual-converter
                    bytestring >= 0.10.2.0,
                    cryptohash >= 0.9.1,
                    binary >= 0.7.1.0
-  ghc-options:     -Wall
+  ghc-options:     -Wall -O2
   other-modules:   Converter
 
