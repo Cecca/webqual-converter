@@ -53,5 +53,5 @@ groupHashes bs
 
 -- | Concatenates a list of bytestrings into a single one
 unGroupHashes :: [ByteString] -> ByteString
-unGroupHashes = Prelude.foldr BS.append BS.empty
+unGroupHashes = BS.concat
 
