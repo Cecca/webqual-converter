@@ -3,7 +3,9 @@ module Main where
 import System.Environment (getArgs)
 import Converter
 import Data.ByteString.Lazy.Char8 as BSC hiding (map, putStrLn, filter)
-import System.Directory (doesFileExist, getDirectoryContents)
+import System.Directory ( doesFileExist
+                        , doesDirectoryExist
+                        , getDirectoryContents)
 import System.FilePath ((</>))
 import Control.Monad
 
@@ -36,8 +38,9 @@ convertLinksFile input output = do
     BSC.writeFile output $ unGroupHashes smallHashes
 
 getFiles :: FilePath -> IO [FilePath]
-getFiles dir = do
-  names <- getDirectoryContents dir
-  filterM doesFileExist names
+getFiles dir =
+  getDirectoryContents dir >>=
+  filterM doesFileExist >>=
+  \paths -> return $ map (dir </>) paths
 
 
