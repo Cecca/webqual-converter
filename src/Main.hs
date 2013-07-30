@@ -5,6 +5,7 @@ import Converter
 import Data.ByteString.Lazy.Char8 as BSC hiding (map, putStrLn, filter)
 import System.Directory ( doesFileExist
                         , doesDirectoryExist
+                        , createDirectory
                         , getDirectoryContents)
 import System.FilePath ((</>))
 import Control.Monad
@@ -14,14 +15,25 @@ main :: IO()
 main = do
     args <- getArgs
     case args of
-      ["-u",input,output] -> do
-          convertUrlsFile input output
-          putStrLn $ "Converted " ++ input
-      ["-l",input,output] -> do
-          convertLinksFile input output
-          putStrLn $ "Converted " ++ input
+      [opType,input,output] -> do
+        let conversionFunc = case opType of
+              "-u" -> convertUrlsFile
+              "-l" -> convertLinksFile
+              _ -> error "Unknown operation"
+        createDirectory output
+        inputFiles <- getFiles input
+        mapM_ (convertWith conversionFunc input output) inputFiles
+        putStrLn "Done!"
       _ -> error "Please provide both input and output filenames"
 
+convertWith :: (FilePath -> FilePath -> IO())
+            -> FilePath
+            -> FilePath
+            -> FilePath
+            -> IO ()
+convertWith func inDir outDir file = do
+  func (inDir </> file) (outDir </> file)
+  putStrLn $ "Converted " ++ file
 
 convertUrlsFile :: FilePath -> FilePath -> IO ()
 convertUrlsFile input output = do
@@ -38,9 +50,6 @@ convertLinksFile input output = do
     BSC.writeFile output $ unGroupHashes smallHashes
 
 getFiles :: FilePath -> IO [FilePath]
-getFiles dir =
-  getDirectoryContents dir >>=
-  filterM doesFileExist >>=
-  \paths -> return $ map (dir </>) paths
+getFiles dir = getDirectoryContents dir >>= filterM doesFileExist
 
 
