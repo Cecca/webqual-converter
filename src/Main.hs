@@ -2,7 +2,11 @@ module Main where
 
 import System.Environment (getArgs)
 import Converter
-import Data.ByteString.Lazy.Char8 as BSC hiding (map, putStrLn)
+import Data.ByteString.Lazy.Char8 as BSC hiding (map, putStrLn, filter)
+import System.Directory (doesFileExist, getDirectoryContents)
+import System.FilePath ((</>))
+import Control.Monad
+
 
 main :: IO()
 main = do
@@ -30,5 +34,10 @@ convertLinksFile input output = do
     let origHashes = groupHashes inData
     let smallHashes = map get64bitHash origHashes
     BSC.writeFile output $ unGroupHashes smallHashes
+
+getFiles :: FilePath -> IO [FilePath]
+getFiles dir = do
+  names <- getDirectoryContents dir
+  filterM doesFileExist names
 
 
