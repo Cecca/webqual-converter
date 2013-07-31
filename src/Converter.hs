@@ -4,7 +4,7 @@ module Converter (
     -- * Urls file processing
       processLines, pairToStr,
     -- * Links file processing
-      groupHashes, unGroupHashes
+      processLinks, groupHashes, unGroupHashes
     ) where
 
 import Data.ByteString.Lazy as BS
@@ -50,8 +50,7 @@ pairToStr (num, str) = numStr `BSC.append` sp `BSC.append` str
 -- # Links file processing #
 
 processLinks :: ByteString -> ByteString
-processLinks links = unGroupHashes smallHashes
-    where smallHashes = parMap rseq get64bitHash $ groupHashes links
+processLinks = unGroupHashes . (parMap rseq get64bitHash) . groupHashes
 
 -- | Given a bytestring, groups the bytes 16 by 16
 groupHashes :: ByteString -> [ByteString]
