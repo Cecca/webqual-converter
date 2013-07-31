@@ -76,5 +76,5 @@ help = "webqual-converter: converts datasets from one format to another\n\n" ++
        "core to process a file. In order to use this feature you should\n" ++
        "invoke the program like the following:\n\n" ++
        "    webqual-converter [options] input output +RTS -N4\n\n" ++
-       "if you have, for instance, 8 cores.\n"
+       "if you have, for instance, 4 cores.\n"
 
