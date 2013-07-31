@@ -13,6 +13,7 @@ import Crypto.Hash
 import Data.Word
 import Data.Binary
 import Data.Bits
+import Control.Parallel.Strategies
 
 -- | Convert a byteString to an unsigned 64 bit integer
 bs2Int :: ByteString -> Word64
@@ -37,7 +38,7 @@ get64bitId = bs2Int . get64bitHash
 
 -- | Associate to each bytestring its 64 bit integer hash
 processLines :: [ByteString] -> [(Word64, ByteString)]
-processLines = Prelude.map (\str -> (get64bitId str, str))
+processLines = parMap rseq (\str -> (get64bitId str, str))
 
 -- | Converts a pair of hash and associated string to a single bytestring,
 -- with a space between the two values
