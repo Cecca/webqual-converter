@@ -3,6 +3,7 @@ module Main where
 import System.Environment (getArgs)
 import Converter
 import Data.ByteString.Lazy.Char8 as BSC hiding (map, putStrLn, filter)
+import Data.ByteString.Lazy as BS hiding (map, putStrLn, filter)
 import System.Directory ( doesFileExist
                         {-, doesDirectoryExist-}
                         , createDirectory
@@ -39,15 +40,16 @@ convertWith func inDir outDir file = do
   putStrLn $ "Converted " ++ file
 
 convertUrlsFile :: FilePath -> FilePath -> IO ()
-convertUrlsFile input output = do
-    inData <- BSC.readFile input
-    let pairs = (processLines . BSC.lines) inData
-    let outData = BSC.unlines $ map pairToStr pairs
-    BSC.writeFile output outData
+convertUrlsFile input output =
+    {-inData <- BSC.readFile input-}
+    {-let pairs = (processLines . BSC.lines) inData-}
+    {-let outData = BSC.unlines $ map pairToStr pairs-}
+    {-BSC.writeFile output outData-}
+    BSC.readFile input >>= return . processUrls >>= BSC.writeFile output
 
 convertLinksFile :: FilePath -> FilePath -> IO ()
 convertLinksFile input output =
-    BSC.readFile input >>= return . processLinks >>= BSC.writeFile output
+    BS.readFile input >>= return . processLinks >>= BS.writeFile output
 
 getFiles :: FilePath -> IO [FilePath]
 getFiles dir = getDirectoryContents dir >>= 

@@ -2,9 +2,9 @@ module Converter (
     -- * Hash conversions
       bs2Int, get64bitHash, get64bitId,
     -- * Urls file processing
-      processLines, pairToStr,
+      processUrls,
     -- * Links file processing
-      processLinks, groupHashes, unGroupHashes
+      processLinks
     ) where
 
 import Data.ByteString.Lazy as BS
@@ -36,9 +36,12 @@ get64bitId = bs2Int . get64bitHash
 
 -- # Urls file processing #
 
+processUrls :: ByteString -> ByteString
+processUrls = BSC.unlines . processLines . BSC.lines
+
 -- | Associate to each bytestring its 64 bit integer hash
-processLines :: [ByteString] -> [(Word64, ByteString)]
-processLines = parMap rseq (\str -> (get64bitId str, str))
+processLines :: [ByteString] -> [ByteString]
+processLines = parMap rseq (\str -> pairToStr (get64bitId str, str))
 
 -- | Converts a pair of hash and associated string to a single bytestring,
 -- with a space between the two values
