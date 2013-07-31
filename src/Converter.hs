@@ -12,6 +12,7 @@ import Data.ByteString.Lazy.Char8 as BSC
 import Crypto.Hash
 import Data.Word
 import Data.Binary
+import Data.Bits
 
 -- | Convert a byteString to an unsigned 64 bit integer
 bs2Int :: ByteString -> Word64
@@ -23,8 +24,10 @@ md5 = hashlazy
 
 -- | Extracts the 64 bit hash from a 128 MD5 hash
 get64bitHash :: ByteString -> ByteString
-get64bitHash str = BS.take 8 $ fromChunks [h]
-  where h = digestToByteString $ md5 str
+get64bitHash str = clearBit first 7 `BS.cons` rest
+  where Just (first,rest) = BS.uncons signedHash
+        signedHash = BS.take 8 $ fromChunks [h]
+        h = digestToByteString $ md5 str
 
 -- | Extracts the unsigned 64 bit integer hash from a 128 bit one
 get64bitId :: ByteString -> Word64
