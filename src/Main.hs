@@ -4,7 +4,7 @@ import System.Environment (getArgs)
 import Converter
 import Data.ByteString.Lazy.Char8 as BSC hiding (map, putStrLn, filter)
 import System.Directory ( doesFileExist
-                        , doesDirectoryExist
+                        {-, doesDirectoryExist-}
                         , createDirectory
                         , getDirectoryContents)
 import System.FilePath ((</>))
@@ -25,7 +25,7 @@ main = do
               _ -> error "Unknown operation"
         createDirectory output
         inputFiles <- getFiles input
-        mapM (convertWith conversionFunc input output) inputFiles
+        mapM_ (convertWith conversionFunc input output) inputFiles
         putStrLn "Done!"
       _ -> putStrLn help >> exitFailure
 
@@ -46,11 +46,8 @@ convertUrlsFile input output = do
     BSC.writeFile output outData
 
 convertLinksFile :: FilePath -> FilePath -> IO ()
-convertLinksFile input output = do
-    inData <- BSC.readFile input
-    let origHashes = groupHashes inData
-    let smallHashes = map get64bitHash origHashes
-    BSC.writeFile output $ unGroupHashes smallHashes
+convertLinksFile input output =
+    BSC.readFile input >>= return . processLinks >>= BSC.writeFile output
 
 getFiles :: FilePath -> IO [FilePath]
 getFiles dir = getDirectoryContents dir >>= 
