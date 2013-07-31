@@ -49,6 +49,10 @@ pairToStr (num, str) = numStr `BSC.append` sp `BSC.append` str
 
 -- # Links file processing #
 
+processLinks :: ByteString -> ByteString
+processLinks links = unGroupHashes smallHashes
+    where smallHashes = parMap rseq get64bitHash $ groupHashes links
+
 -- | Given a bytestring, groups the bytes 16 by 16
 groupHashes :: ByteString -> [ByteString]
 groupHashes bs
