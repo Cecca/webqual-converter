@@ -9,7 +9,7 @@ import System.Directory ( doesFileExist
                         , getDirectoryContents)
 import System.FilePath ((</>))
 import Control.Monad
-import qualified Control.Monad.Parallel as MP (mapM)
+{-import qualified Control.Monad.Parallel as MP (mapM)-}
 import System.Exit
 
 
@@ -25,7 +25,7 @@ main = do
               _ -> error "Unknown operation"
         createDirectory output
         inputFiles <- getFiles input
-        MP.mapM (convertWith conversionFunc input output) inputFiles
+        mapM (convertWith conversionFunc input output) inputFiles
         putStrLn "Done!"
       _ -> putStrLn help >> exitFailure
 
