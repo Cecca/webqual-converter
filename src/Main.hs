@@ -53,7 +53,8 @@ convertLinksFile input output = do
     BSC.writeFile output $ unGroupHashes smallHashes
 
 getFiles :: FilePath -> IO [FilePath]
-getFiles dir = getDirectoryContents dir >>= filterM doesFileExist
+getFiles dir = getDirectoryContents dir >>= 
+               filterM (\f -> doesFileExist (dir </> f))
 
 
 help :: String
