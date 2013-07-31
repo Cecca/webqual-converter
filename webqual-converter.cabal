@@ -12,7 +12,8 @@ executable webqual-converter
                    cryptohash >= 0.9.1,
                    binary >= 0.7.1.0,
                    filepath >= 1.3.0.1,
-                   directory >= 1.2.0.1
-  ghc-options:     -Wall -O2
+                   directory >= 1.2.0.1,
+                   monad-parallel >= 0.7.1.1
+  ghc-options:     -Wall -O2 -threaded
   other-modules:   Converter
 

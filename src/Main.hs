@@ -9,6 +9,7 @@ import System.Directory ( doesFileExist
                         , getDirectoryContents)
 import System.FilePath ((</>))
 import Control.Monad
+import qualified Control.Monad.Parallel as MP (mapM)
 
 
 main :: IO()
@@ -22,7 +23,7 @@ main = do
               _ -> error "Unknown operation"
         createDirectory output
         inputFiles <- getFiles input
-        mapM_ (convertWith conversionFunc input output) inputFiles
+        MP.mapM (convertWith conversionFunc input output) inputFiles
         putStrLn "Done!"
       _ -> error "Please provide both input and output filenames"
 
